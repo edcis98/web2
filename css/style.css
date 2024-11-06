@@ -1,0 +1,131 @@
+/* Estilos generales */
+body {
+     background: url('../img/aeropuerto.jpg') no-repeat center center fixed; /* Fondo de imagen */
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Ajustamos a flex-start para que no se quede centrado verticalmente */
+    height: auto; /* Eliminar la altura fija */
+    min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la ventana */
+    margin: 0;
+    color: #333;
+    padding: 20px; /* Padding general */
+}
+
+/* Contenedor del formulario */
+.form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Aumentar el tamaño máximo para que el formulario no se vea tan pequeño */
+    margin: auto;
+    overflow: auto; /* Asegura que si el contenido es largo, se muestre todo */
+}
+
+/* Contenedor para el logo y título */
+.form-header {
+    display: flex;
+    align-items: center; /* Centra el texto y el logo verticalmente */
+    margin-bottom: 30px; /* Añadir espacio entre el logo y el formulario */
+}
+
+.form-header h2 {
+    margin: 0;
+    color: #6a2e91; /* Morado */
+    font-size: 24px;
+    padding-left: 10px; /* Espacio entre el logo y el título */
+}
+
+.form-header img {
+    width: 150px; /* Establecer un tamaño adecuado para el logo */
+    height: auto; /* Mantener la proporción original */
+}
+
+/* Títulos de las secciones */
+h3 {
+    color: #6a2e91; /* Morado */
+    margin-bottom: 15px;
+}
+
+/* Etiquetas */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #6a2e91; /* Morado */
+}
+
+/* Estilo de los campos de entrada */
+input, select, textarea {
+    width: 95%;
+    padding: 12px;
+    margin: 8px 0 20px 0;
+    border: 2px solid #d1c4e9;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #ff7f32; /* Naranja */
+    outline: none;
+}
+
+/* Estilo del botón */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff7f32; /* Naranja */
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #e67026;
+}
+
+/* Pie de formulario */
+.form-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin-top: 20px; /* Espacio superior */
+}
+
+.form-footer a {
+    color: #6a2e91;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Espacio para los campos "Otro" en zona crítica */
+#campo-otro-zona {
+    margin-top: 10px;
+}
+
+/* Estilo de los checkboxes */
+input[type="checkbox"] {
+    width: auto; /* Establece el tamaño automático para el checkbox */
+    height: auto; /* El tamaño también se ajusta automáticamente */
+    margin-right: 10px; /* Espacio entre el checkbox y el texto */
+    margin-top: 20px;
+    vertical-align: middle; /* Alineación vertical del checkbox */
+}
+
+/* Estilo de los labels de los checkboxes */
+label {
+    display: inline-flex; /* Hace que los labels se alineen horizontalmente */
+    align-items: center; /* Alineación vertical centrada de los elementos */
+    margin-right: 15px; /* Espacio entre los checkboxes */
+}

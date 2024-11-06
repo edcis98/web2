@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORMATO SOLICITUD LCAR</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <img src="img/logo.png" alt="Logo">
+            <h2>Formulario de trámite de licencia</h2>
+        </div>
+        
+        <!-- Asegúrate de que el formulario tenga un ID único -->
+        <form id="prueba">
+
+            <!-- Subtítulo: Datos del Solicitante -->
+            <h3>Datos del Solicitante</h3>
+
+            <label for="nombre-solicitante">Nombres</label>
+            <input type="text" id="nombre-solicitante" name="nombre-solicitante" required>
+
+            <label for="apellidos-solicitante">Apellido Paterno</label>
+            <input type="text" id="apellidos-solicitante" name="apellido-paterno-solicitante" required>
+
+            <label for="apellidos-solicitante">Apellido Materno</label>
+            <input type="text" id="apellidos-solicitante" name="apellido-materno-solicitante" required>
+
+            <label for="dependencia-solicitante">Dependencia o Empresa</label>
+            <input type="text" id="dependencia-solicitante" name="dependencia-solicitante" required>
+
+            <label for="puesto-solicitante">Puesto o Cargo</label>
+            <input type="text" id="puesto-solicitante" name="puesto-solicitante" required>
+
+            <label for="telefono-solicitante">Teléfono</label>
+            <input type="tel" id="telefono-solicitante" name="telefono-solicitante" required>
+
+            <label for="ext-solicitante">Extensión</label>
+            <input type="tel" id="ext-solicitante" name="ext-solicitante" required>
+
+            <!-- Subtítulo: Datos del Representante que Solicita la Licencia -->
+            <h3>Datos del Representante que Solicita la Licencia</h3>
+
+            <label for="nombre-representante">Nombre</label>
+            <input type="text" id="nombre-representante" name="nombre-representante" required>
+
+            <label for="apellidos-representante">Apellidos</label>
+            <input type="text" id="apellidos-representante" name="apellidos-representante" required>
+
+            <label for="dependencia-representante">Dependencia o Empresa</label>
+            <input type="text" id="dependencia-representante" name="dependencia-representante" required>
+
+            <label for="puesto-representante">Puesto o Cargo</label>
+            <input type="text" id="puesto-representante" name="puesto-representante" required>
+
+            <label for="telefono-representante">Teléfono</label>
+            <input type="tel" id="telefono-representante" name="telefono-representante" required>
+
+            <label for="ext-representante">Extensión</label>
+            <input type="tel" id="ext-representante" name="ext-representante" required>
+
+            <!-- Subtítulo: Zona Crítica dentro del Aeropuerto -->
+            <h3>Zona crítica por la que se circulará durante el desempeño de sus funciones dentro del aeropuerto:</h3>
+
+            <label><input type="checkbox" id="camino-perimetral" name="zona-critica" value="X"> Camino perimetral</label>
+            <label><input type="checkbox" id="plataforma" name="zona-critica" value="X"> Plataforma</label>
+            <label><input type="checkbox" id="calle-rodaje" name="zona-critica" value="X"> Calle de rodaje y/o Pista</label>
+            <label><input type="checkbox" id="otro-zona" name="zona-critica" value="X"> Otro (Especificar):</label>
+            
+            <!-- Campo de texto que aparece si se selecciona "Otro" -->
+            <div id="campo-otro-zona" style="display:none;">
+                <input type="text" id="especificar-otra-zona" name="especificar-otra-zona" placeholder="Especifica otra zona" />
+            </div>
+
+            <!-- Botón de envío -->
+            <button type="submit">Enviar</button>
+        </form>
+
+        <div class="form-footer">
+            <p>¿Tienes alguna pregunta? <a href="#">Contáctanos aquí</a></p>
+        </div>
+    </div>
+
+    <!-- Script para mostrar el campo "Otro" si se selecciona -->
+    <script>
+        document.getElementById('otro-zona').addEventListener('change', function() {
+            var campoOtroZona = document.getElementById('campo-otro-zona');
+            if (this.checked) {
+                campoOtroZona.style.display = 'block';
+            } else {
+                campoOtroZona.style.display = 'none';
+            }
+        });
+
+         document.querySelector('#prueba').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita que el formulario recargue la página
+            
+            // Obtener los datos del formulario
+            const formData = new FormData(event.target);
+            const nombreSolicitante = formData.get('nombre-solicitante');
+            const apellidospSolicitante = formData.get('apellido-paterno-solicitante');
+            const apellidosmSolicitante = formData.get('apellido-materno-solicitante');
+            const dependenciaSolicitante = formData.get('dependencia-solicitante');
+            const puestoSolicitante = formData.get('puesto-solicitante');
+            const telefonoSolicitante = formData.get('telefono-solicitante');
+            const extSolicitante = "EXT: " + formData.get('ext-solicitante');
+
+            const nombreRepresentante = formData.get('nombre-representante');
+            const apellidosRepresentante = formData.get('apellidos-representante');
+            const dependenciaRepresentante = formData.get('dependencia-representante');
+            const puestoRepresentante = formData.get('puesto-representante');
+            const telefonoRepresentante = formData.get('telefono-representante');
+            const extRepresentante = "EXT: " + formData.get('ext-representante');
+
+
+
+
+
+
+            // Cargar el archivo PDF existente
+            const existingPdfBytes = await fetch('media/formato.pdf').then(res => res.arrayBuffer());
+
+            // Crear un documento PDF desde el archivo cargado
+            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+
+            // Obtener la primera página del PDF
+            const page = pdfDoc.getPages()[0];
+
+            // Cargar la fuente
+            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+
+            // Establecer el tamaño del texto
+            const textSize = 12;
+            const textSize2 = 10;
+
+            // Escribir el texto en las posiciones específicas (coordenadas)
+            page.drawText(nombreSolicitante, { x: 380, y: 605, font, size: textSize });  // Nombre
+            page.drawText(apellidospSolicitante, { x: 100, y: 605, font, size: textSize });  // Apellidos
+            page.drawText(apellidosmSolicitante, { x: 250, y: 605, font, size: textSize });  // Apellidos
+            page.drawText(dependenciaSolicitante, { x: 100, y: 550, font, size: textSize });  // Dependencia
+            page.drawText(puestoSolicitante, { x: 130, y: 510, font, size: textSize });  // Puesto
+            page.drawText(telefonoSolicitante, { x: 380, y: 510, font, size: textSize });  // Teléfono
+            page.drawText(extSolicitante, { x: 450, y: 510, font, size: textSize });  // Extensión
+
+            page.drawText(nombreRepresentante, { x: 60, y: 455, font, size: textSize });  // Nombre
+            page.drawText(apellidosRepresentante, { x: 160, y: 455, font, size: textSize });  // Apellidos
+            page.drawText(dependenciaRepresentante, { x: 100, y: 550, font, size: textSize });  // Dependencia
+            page.drawText(puestoRepresentante, { x: 100, y: 420, font, size: textSize });  // Puesto
+            page.drawText(telefonoRepresentante, { x: 380, y: 420, font, size: textSize });  // Teléfono
+            page.drawText(extRepresentante, { x: 450, y: 420, font, size: textSize });  // Extensión
+
+            page.drawText(nombreSolicitante, { x: 100, y: 395, font, size: textSize });  // Nombre
+            page.drawText(apellidospSolicitante, { x: 180, y: 395, font, size: textSize });  // Apellidos
+            page.drawText(apellidosmSolicitante, { x: 230, y: 395, font, size: textSize });  // Apellidos
+
+             // Validar cada checkbox específico
+            if (document.getElementById('camino-perimetral').checked) {
+               const caminoPerimetral = (document.getElementById('camino-perimetral').value);
+               page.drawText(caminoPerimetral, { x: 510, y: 318, font, size: textSize2 }); 
+            }
+            if (document.getElementById('plataforma').checked) {
+               const Plataforma = (document.getElementById('plataforma').value);
+               page.drawText(Plataforma, { x: 510, y: 308, font, size: textSize2 }); 
+            }
+            if (document.getElementById('calle-rodaje').checked) {
+                const calleRodaje = (document.getElementById('calle-rodaje').value);
+                page.drawText(calleRodaje, { x: 510, y: 298, font, size: textSize2 });
+            }
+            if (document.getElementById('otro-zona').checked) {
+                const zona = (document.getElementById('otro-zona').value);
+                const zonatxt= formData.get('especificar-otra-zona');
+
+                page.drawText(zona, { x: 510, y: 288, font, size: textSize2 });
+                page.drawText(zonatxt, { x: 170, y: 285, font, size: textSize });
+            }
+
+
+            // Guardar el PDF con los cambios
+            const pdfBytes = await pdfDoc.save();
+
+            // Crear un Blob con el PDF generado
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+            // Crear un objeto URL temporal para el Blob
+            const url = URL.createObjectURL(blob);
+
+            // Crear un enlace de descarga programático
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Formulario_Solicitud_LCAR.pdf'; // Nombre del archivo de salida
+            a.style.display = 'none';  // No mostrar el enlace
+            document.body.appendChild(a);  // Agregar el enlace al DOM
+
+            // Simular el clic en el enlace para descargar el PDF automáticamente
+            a.click();
+
+            // Limpiar el DOM eliminando el enlace y revocar la URL
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
