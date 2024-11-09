@@ -277,6 +277,8 @@ async function procesarImagen(file) {
                 page.drawText(zonatxt, { x: 190, y: 285, font, size: textSize });
             }
 
+            page.drawText(fecha, { x: 100, y: 670, font, size: textSize });
+
                          // Cargar la imagen en el PDF
             const image = await pdfDoc.embedJpg(fotoBytes); // Usa embedPng para PNG
             const width = 80; // Ancho fijo que desees
