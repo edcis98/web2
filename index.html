@@ -6,6 +6,7 @@
     <title>FORMATO SOLICITUD LCAR</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script> <!-- Añadido para leer metadatos Exif -->
 </head>
 <body>
     <div class="form-container">
@@ -98,21 +99,85 @@
             }
         });
 
+
+
+     function esDispositivoMovil() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            return /android|iphone|ipad|ipod|opera mini|iemobile|wpdesktop/i.test(userAgent.toLowerCase());
+        }
+
+        async function ajustarOrientacionImagen(file) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    img.src = event.target.result;
+                };
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Leer metadatos Exif para verificar orientación
+                    EXIF.getData(img, function() {
+                        const orientation = EXIF.getTag(this, 'Orientation') || 1;
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Ajustar dimensiones del canvas si es necesario
+                        if (orientation > 4) {
+                            canvas.width = height;
+                            canvas.height = width;
+                        } else {
+                            canvas.width = width;
+                            canvas.height = height;
+                        }
+
+                        ctx.drawImage(img, 0, 0);
+                        resolve(canvas.toDataURL('image/jpeg')); // Retornar imagen ajustada
+                    });
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+
+
+
+
          document.querySelector('#prueba').addEventListener('submit', async function(event) {
             event.preventDefault(); // Evita que el formulario recargue la página
+
             
             // Obtener los datos del formulario
             const formData = new FormData(event.target);
 
-            // Obtener la imagen seleccionada
-            const fotoFile = formData.get('foto-solicitante');
+             const fotoFile = formData.get('foto-solicitante');
             if (!fotoFile) {
                 alert("Por favor, sube una foto.");
                 return;
             }
 
+            // Obtener la imagen seleccionada
+           let fotoDataUrl;
+            if (esDispositivoMovil()) {
+                // Ajustar la orientación si es un dispositivo móvil
+                fotoDataUrl = await ajustarOrientacionImagen(fotoFile);
+            } else {
+                // Convertir la imagen a Data URL sin ajustes
+                const reader = new FileReader();
+                fotoDataUrl = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(fotoFile);
+                });
+            }
+
+
             // Convertir la imagen a un array de bytes
-            const fotoBytes = await fotoFile.arrayBuffer();
+             const fotoBytes = await fetch(fotoDataUrl).then(res => res.arrayBuffer());
 
             const nombreSolicitante = formData.get('nombre-solicitante');
             const apellidospSolicitante = formData.get('apellido-paterno-solicitante');
@@ -128,6 +193,7 @@
             const puestoRepresentante = formData.get('puesto-representante');
             const telefonoRepresentante = formData.get('telefono-representante');
             const extRepresentante = "EXT: " + formData.get('ext-representante');
+
 
 
 
