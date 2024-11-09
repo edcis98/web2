@@ -106,48 +106,44 @@
             return /android|iphone|ipad|ipod|opera mini|iemobile|wpdesktop/i.test(userAgent.toLowerCase());
         }
 
-        async function ajustarOrientacionImagen(file) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                const reader = new FileReader();
+async function ajustarOrientacionImagen(file) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const reader = new FileReader();
 
-                reader.onload = function(event) {
-                    img.src = event.target.result;
-                };
+        reader.onload = function(event) {
+            img.src = event.target.result;
+        };
 
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
+        img.onload = function() {
+            let width = img.width;
+            let height = img.height;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-                    // Leer metadatos Exif para verificar orientación
-                    EXIF.getData(img, function() {
-                        const orientation = EXIF.getTag(this, 'Orientation') || 1;
-                        let width = img.width;
-                        let height = img.height;
+            // Definir dimensiones del canvas según la orientación
+            if (width > height) {
+                // Ajustar a un tamaño estándar o escala si es necesario
+                canvas.width = width;
+                canvas.height = height;
+            } else {
+                canvas.width = height;
+                canvas.height = width;
+            }
 
-                        // Ajustar dimensiones del canvas si es necesario
-                        if (orientation > 4) {
-                            canvas.width = height;
-                            canvas.height = width;
-                        } else {
-                            canvas.width = width;
-                            canvas.height = height;
-                        }
+            // Limpiar el canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Dibujar la imagen ajustando la orientación si es necesario
+            ctx.drawImage(img, 0, 0, width, height);
 
-                        // Limpiar el canvas
-                         ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Genera la URL de la imagen ajustada
+            resolve(canvas.toDataURL('image/jpeg'));
+        };
 
-                        // Dibujar la imagen ajustando la orientación si es necesario
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        resolve(canvas.toDataURL('image/jpeg')); // Retornar imagen ajustada
-                    });
-                };
-
-                reader.readAsDataURL(file);
-            });
-        }
+        reader.readAsDataURL(file);
+    });
+}
 
 
 
@@ -200,6 +196,12 @@
             const telefonoRepresentante = formData.get('telefono-representante');
             const extRepresentante = "EXT: " + formData.get('ext-representante');
 
+
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0'); // Asegura dos dígitos
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses de 0 a 11
+            const year = today.getFullYear();
+            const fecha = `${day}/${month}/${year}`;
 
 
 
