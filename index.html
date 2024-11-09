@@ -179,7 +179,7 @@ async function procesarImagen(file) {
            let fotoDataUrl;
             if (esDispositivoMovil()) {
                 // Ajustar la orientación si es un dispositivo móvil
-                fotoDataUrl = await ajustarOrientacionImagen(fotoFile);
+                fotoDataUrl = await procesarImagen(fotoFile);
             } else {
                 // Convertir la imagen a Data URL sin ajustes
                 const reader = new FileReader();
