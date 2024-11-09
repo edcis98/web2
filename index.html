@@ -133,10 +133,14 @@
                             canvas.width = width;
                             canvas.height = height;
                         }
-                        //limpiar canvas para eliminar borde
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                        ctx.drawImage(img, 0, 0);
+
+                        // Limpiar el canvas
+                         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        // Dibujar la imagen ajustando la orientación si es necesario
+                        ctx.drawImage(img, 0, 0, width, height);
+
                         resolve(canvas.toDataURL('image/jpeg')); // Retornar imagen ajustada
                     });
                 };
