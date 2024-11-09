@@ -41,6 +41,9 @@
             <label for="ext-solicitante">Extensión</label>
             <input type="tel" id="ext-solicitante" name="ext-solicitante" required>
 
+            <label for="foto-solicitante">Foto del solicitante</label>
+            <input type="file" id="foto-solicitante" name="foto-solicitante" accept="image/*">
+
             <!-- Subtítulo: Datos del Representante que Solicita la Licencia -->
             <h3>Datos del Representante que Solicita la Licencia</h3>
 
@@ -100,6 +103,17 @@
             
             // Obtener los datos del formulario
             const formData = new FormData(event.target);
+
+            // Obtener la imagen seleccionada
+            const fotoFile = formData.get('foto-solicitante');
+            if (!fotoFile) {
+                alert("Por favor, sube una foto.");
+                return;
+            }
+
+            // Convertir la imagen a un array de bytes
+            const fotoBytes = await fotoFile.arrayBuffer();
+
             const nombreSolicitante = formData.get('nombre-solicitante');
             const apellidospSolicitante = formData.get('apellido-paterno-solicitante');
             const apellidosmSolicitante = formData.get('apellido-materno-solicitante');
@@ -176,6 +190,17 @@
                 page.drawText(zona, { x: 510, y: 288, font, size: textSize2 });
                 page.drawText(zonatxt, { x: 190, y: 285, font, size: textSize });
             }
+
+                         // Cargar la imagen en el PDF
+            const image = await pdfDoc.embedJpg(fotoBytes); // Usa embedPng para PNG
+            const { width, height } = image.scale(0.4);  // Redimensionar la imagen (opcional)
+            // Colocar la imagen en las coordenadas deseadas (por ejemplo, x: 100, y: 650)
+            page.drawImage(image, {
+                x: 440,
+                y: 620,
+                width,
+                height
+            });
 
 
             // Guardar el PDF con los cambios
