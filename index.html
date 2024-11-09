@@ -106,7 +106,7 @@
             return /android|iphone|ipad|ipod|opera mini|iemobile|wpdesktop/i.test(userAgent.toLowerCase());
         }
 
-async function ajustarOrientacionImagen(file) {
+async function procesarImagen(file) {
     return new Promise((resolve) => {
         const img = new Image();
         const reader = new FileReader();
@@ -116,28 +116,40 @@ async function ajustarOrientacionImagen(file) {
         };
 
         img.onload = function() {
-            let width = img.width;
-            let height = img.height;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            // Definir dimensiones del canvas según la orientación
+            // Verificar la orientación
+            let width = img.width;
+            let height = img.height;
+            let rotate = false;
+
             if (width > height) {
-                // Ajustar a un tamaño estándar o escala si es necesario
-                canvas.width = width;
-                canvas.height = height;
-            } else {
-                canvas.width = height;
-                canvas.height = width;
+                // Si la imagen es más ancha que alta (orientación horizontal)
+                rotate = true;
+                [width, height] = [height, width]; // Intercambiar ancho y alto
             }
 
-            // Limpiar el canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Ajustar el tamaño del canvas
+            canvas.width = width;
+            canvas.height = height;
 
-            // Dibujar la imagen ajustando la orientación si es necesario
-            ctx.drawImage(img, 0, 0, width, height);
+            // Limpiar el canvas para evitar bordes negros
+            ctx.clearRect(0, 0, width, height);
 
-            // Genera la URL de la imagen ajustada
+            if (rotate) {
+                // Si la imagen debe ser rotada 90 grados
+                ctx.save();
+                ctx.translate(width / 2, height / 2);
+                ctx.rotate(Math.PI / 2);
+                ctx.drawImage(img, -height / 2, -width / 2, height, width);
+                ctx.restore();
+            } else {
+                // Si no es necesario rotar
+                ctx.drawImage(img, 0, 0, width, height);
+            }
+
+            // Obtener la imagen procesada como base64
             resolve(canvas.toDataURL('image/jpeg'));
         };
 
