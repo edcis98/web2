@@ -193,14 +193,14 @@
 
                          // Cargar la imagen en el PDF
             const image = await pdfDoc.embedJpg(fotoBytes); // Usa embedPng para PNG
-            const width = 100; // Ancho fijo que desees
-            const height = 150; // Alto fijo que desees // Redimensionar la imagen (opcional)
+            const width = 80; // Ancho fijo que desees
+            const height = 80; // Alto fijo que desees // Redimensionar la imagen (opcional)
             // Colocar la imagen en las coordenadas deseadas (por ejemplo, x: 100, y: 650)
             page.drawImage(image, {
                 x: 440,
                 y: 620,
-                width,
-                height
+                width: width,
+                height: height 
             });
 
 
